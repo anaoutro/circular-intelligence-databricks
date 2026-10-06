@@ -30,7 +30,7 @@ money_columns = columns[6:]
 
 def upsert_events(frame, table):
     if not spark.catalog.tableExists(table):
-        frame.write.format("delta").mode("errorifexists").saveAsTable(table)
+        frame.write.format("delta").mode("append").saveAsTable(table)
     else:
         (DeltaTable.forName(spark, table).alias("t").merge(frame.alias("s"), "t.event_hash = s.event_hash")
          .whenNotMatchedInsertAll().execute())
@@ -81,7 +81,7 @@ silver = latest.select("equipment_id","model","supplier","updated_at","event_tim
     F.col("probability_value").cast("decimal(5,4)").alias("failure_probability"),
     *[F.col(c+"_value").cast("decimal(16,2)").alias(c) for c in money_columns])
 if not spark.catalog.tableExists(f"{prefix}.silver_equipment"):
-    silver.write.format("delta").mode("errorifexists").saveAsTable(f"{prefix}.silver_equipment")
+    silver.write.format("delta").mode("append").saveAsTable(f"{prefix}.silver_equipment")
 else:
     (DeltaTable.forName(spark,f"{prefix}.silver_equipment").alias("t")
      .merge(silver.alias("s"),"t.equipment_id = s.equipment_id")
@@ -135,3 +135,4 @@ assert gold.filter("route = 'Repair' AND condition_score < 30").count() == 0, "I
 display(model_summary.orderBy(F.col("expected_net").desc()))
 display(gold.filter("needs_review").orderBy("expected_net"))
 display(quarantine.select("equipment_id","quality_reason"))
+

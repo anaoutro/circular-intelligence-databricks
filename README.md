@@ -63,13 +63,23 @@ flowchart LR
 
 Upload [the fixture](data/equipment_events.csv) to a Unity Catalog volume and import the notebook. Configure catalog, schema and input_path widgets, then run all cells. Requires compatible Databricks compute and permission to read the volume and create/write tables. Full assumptions and steps are in [setup](docs/SETUP.md). Run twice to verify replay preserves counts and financial totals.
 
+## Databricks execution evidence
+
+**Validated on Databricks Serverless on October 5, 2026.** The recorded workspace run completed the final fixture assertions: 252 unique Bronze events, 7 quarantined events, 243 Silver devices, expected contribution BRL 33,861.40 and gain against baseline BRL 9,066.40.
+
+[Watch the recorded demo](docs/evidence/Circular_Intelligence_Demo.mp4) · [Final validation](docs/evidence/Circular_Validacao_Databricks.png) · [Gold results](docs/evidence/Circular_Resultados_Databricks.png)
+
+The video edits an actual workspace recording. The fixture is synthetic and the financial values are modeled. This evidence confirms one completed execution; replay idempotency, production scheduling and separate SQL dashboard execution remain unverified.
+
 ## Verification status
 
 **Checked locally:** 13 business tests, fixture reconciliation, deterministic outputs, Python syntax, JSON and documentation links, desktop/mobile browser demo.
 
 **CI prepared:** repository checks, business tests and regeneration-drift checks. The workflow runs after publication; no hosted CI success is claimed yet.
 
-**Still required:** Databricks notebook execution, Spark/Delta integration, privileges and SQL execution in a workspace.
+**Confirmed in the recorded workspace run:** PySpark/Delta notebook execution on Serverless, table writes and final fixture assertions.
+
+**Still required:** a second run to verify replay idempotency, separate SQL dashboard execution and production job orchestration.
 
 ## Deliberate boundaries
 
@@ -94,3 +104,4 @@ docs/       Case study, architecture, setup, contract and offline demo
 [Related Salesforce project](docs/RELATED-PROJECT.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)
 
 All events, suppliers, device models and financial assumptions are synthetic. This is an independent portfolio project.
+
